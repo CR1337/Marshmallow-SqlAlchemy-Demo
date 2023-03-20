@@ -10,21 +10,32 @@ from model import Address, Base, User
 def get_session() -> Session:
     path = "db/db.sqlite3"
     db_exists = os.path.exists(path)
+
+    # create db engine with url to database
     engine = create_engine(f'sqlite:///{path}', echo=False)
+
+    # if file does not exist yet, create new database
     if not db_exists:
         Base.metadata.create_all(engine)
+
+    # create new session with database
     session = Session(engine)
+
+    # if database did not exist, fill it with some data
     if not db_exists:
         fill_db(session)
+
     return session
 
 
 def fill_db(session: Session):
+
     spongebob = User(
         name="spongebob",
         fullname="Spongebob Squarepants",
         addresses=[Address(email_address="spongebob@sqlalchemy.org")],
     )
+    print(repr(spongebob))
     sandy = User(
         name="sandy",
         fullname="Sandy Cheeks",
